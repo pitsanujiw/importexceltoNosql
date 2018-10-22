@@ -70,7 +70,15 @@ function querydata(req, res) {
           res.json({
             message: data
           });
-          resolve(data);
+          var data2 = data.map(e => e.Text);
+
+          fs.writeFile(path.join(__dirname, `../public/${Date.now()}.txt`), data2, function(err) {
+            if (err) {
+              return console.log(err);
+            }
+            console.log("The file was saved!");
+          });
+          resolve("data");
         } else {
           res.json({
             message: data
@@ -80,6 +88,7 @@ function querydata(req, res) {
       });
   });
 }
+
 module.exports = {
   xlsx_to_mongoDB,
   querydata

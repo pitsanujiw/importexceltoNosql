@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const dal = require("./connect/con");
 const xlsx_insert_DBS = require("./route/xlsx");
+var fs = require("fs");
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -18,18 +19,37 @@ app.use(
     extended: true
   })
 );
-
+/**
+ * 
+ */
 const dbName = process.env.DBS_NAME;
 const host = process.env.DB_HOSTNAME;
 const api = process.env.API_HOSTNAME;
 const ports = process.env.API_PORT;
 var server;
 /**  */
+app.get("/writefiles", (req, res) => {
+  var path = "/public",
+    buffer = new Buffer("some content\n");
+  fs.open(__dirname + path, "w", function(err, fd) {
+    if (err) {
+      throw "error opening file: " + err;
+    }
+
+    fs.write(fd, buffer, 0, buffer.length, null, function(err) {
+      if (err) throw "error writing file: " + err;
+      fs.close(fd, function() {
+        console.log("file written");
+        res.send("file written");
+      });
+    });
+  });
+});
 app.get("/getdata", (req, res) => {
   xlsx_insert_DBS
     .querydata(req, res)
     .then(res => {
-      console.log("ok");
+      console.log("ok ⚽️ ");
     })
     .catch(err => {
       console.log(err);
@@ -57,7 +77,7 @@ function startListening() {
       server = app.listen(ports, api, () => {
         const port = server.address().port;
         const hostname = server.address().address;
-        console.log(`Server running at ${hostname}:${port}`);
+        console.log(`Server running at ${hostname}:${port}  👍 😇`);
       });
     })
     .catch(error => {
@@ -71,7 +91,7 @@ function stopListening() {
   if (!server) {
     return;
   }
-  console.log("Closing server now...");
+  console.log("Closing server now... 🙅");
   server.close(() => {
     dal.disconnect();
     console.log("Server is closed.");
