@@ -1,7 +1,7 @@
 var db = undefined;
 var upload = require("../upload/upload_file");
-var dbEvents = require("../connect/con").eventEmitter;
-// var dbconnect = require("../connect/con");
+var dbEvents = require("../connect/connection").eventEmitter;
+var dbconnect = require("../connect/connection");
 var xlsx = require("xlsx");
 const path = require("path");
 const fs = require("fs");
@@ -72,12 +72,16 @@ function querydata(req, res) {
           });
           var data2 = data.map(e => e.Text);
 
-          fs.writeFile(path.join(__dirname, `../public/${Date.now()}.txt`), data2, function(err) {
-            if (err) {
-              return console.log(err);
+          fs.writeFile(
+            path.join(__dirname, `../public/${Date.now()}.txt`),
+            data2,
+            function(err) {
+              if (err) {
+                return console.log(err);
+              }
+              console.log("The file was saved!");
             }
-            console.log("The file was saved!");
-          });
+          );
           resolve("data");
         } else {
           res.json({

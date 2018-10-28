@@ -3,8 +3,8 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const path = require("path");
-const dal = require("./connect/con");
-const xlsx_insert_DBS = require("./route/xlsx");
+const dal = require("./connect/connection");
+const fetchdata = require("./route/xlsx");
 var fs = require("fs");
 
 app.use((req, res, next) => {
@@ -20,7 +20,7 @@ app.use(
   })
 );
 /**
- * 
+ *
  */
 const dbName = process.env.DBS_NAME;
 const host = process.env.DB_HOSTNAME;
@@ -46,7 +46,7 @@ app.get("/writefiles", (req, res) => {
   });
 });
 app.get("/getdata", (req, res) => {
-  xlsx_insert_DBS
+  fetchdata
     .querydata(req, res)
     .then(res => {
       console.log("ok ⚽️ ");
@@ -56,7 +56,7 @@ app.get("/getdata", (req, res) => {
     });
 });
 app.post("/upload", (req, res) => {
-  xlsx_insert_DBS
+  fetchdata
     .xlsx_to_mongoDB(req, res)
     .then(result => {
       console.log("insert success!");
